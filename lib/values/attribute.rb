@@ -11,7 +11,7 @@ class Attribute
       name = name_or_hash
     end
     
-    if not type.is_a? Class 
+    unless(type.is_a?(Class) || type.is_a?(Heading))
       type = type.class
     end
     

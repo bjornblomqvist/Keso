@@ -29,6 +29,7 @@ describe Heading do
         Heading.new(:name => 'a', :type => 1).eql?(Heading.new(:name => 'a', :type => 1)).should be_true
         Heading.new(:name => 'a', :type => 1).eql?(Heading.new(:name => 'b', :type => 1)).should be_false
     end
+  
   end
   
   describe :add do
@@ -50,6 +51,13 @@ describe Heading do
       h = Heading.new 
       h.add(:name => 'a', :type => Fixnum).should_not eql(h)
     end
+    
+    it 'it should accept a heading as a type' do
+      heading_type = Heading.new(:name => 'name', :type => String)
+      
+      Heading.new(:name => 'a', :type => 1).add(:name => 'Names', :type => heading_type)
+      
+    end 
   end
   
   describe :[] do

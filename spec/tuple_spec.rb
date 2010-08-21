@@ -56,6 +56,12 @@ describe Tuple do
     it 'should throw an exception' do
       lambda {Tuple.new({:b => 4,:c => 4, :d => 4}).add(Tuple.new({:d => "Hi this is my test"}))}.should raise_error(ArgumentError)
     end
+    
+    it 'should accept a relation as a value' do
+      relation_value = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:name => 'Emma',:age => 30}))
+      
+      Tuple.new({:b => 4,:c => 4, :d => 4}).add({:persons => relation_value}).should eql(Tuple.new(:b => 4,:c => 4, :d => 4,:persons => relation_value))
+    end
   end
   
   describe :remove do

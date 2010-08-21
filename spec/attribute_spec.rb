@@ -26,6 +26,14 @@ describe Attribute do
     it 'should return true when to attributes with the same name and type is compared' do
       (Attribute.new(:name => :age, :type => Fixnum).eql?(Attribute.new(:name => 'age', :type => Fixnum))).should be_true
     end
+    
+    it 'two diffrent heading types should not be equal' do
+      
+      person = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:name => 'Emma',:age => 30}))
+      person_with_length = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29,:length => 155})).add(Tuple.new({:name => 'Emma',:age => 30, :length => 135}))
+      
+      Attribute.new(:name => :persons, :type => person.heading).should_not eql(Attribute.new(:name => :persons, :type => person_with_length.heading))
+    end
   end
   
   describe :hash do

@@ -13,8 +13,13 @@ class Tuple
         @heading = @heading.add(name_or_attribute)
         @hash = @hash.add(name_or_attribute,value)
       else
-        @heading = @heading.add(Attribute.new(name_or_attribute,value.class))
-        @hash = @hash.add(Attribute.new(name_or_attribute,value.class),value)
+        if value.is_a? Relation
+          @heading = @heading.add(Attribute.new(name_or_attribute,value.heading))
+          @hash = @hash.add(Attribute.new(name_or_attribute,value.heading),value)
+        else
+          @heading = @heading.add(Attribute.new(name_or_attribute,value.class))
+          @hash = @hash.add(Attribute.new(name_or_attribute,value.class),value)
+        end
       end
     end
   end

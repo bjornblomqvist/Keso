@@ -22,6 +22,19 @@ describe Relation do
       lambda { Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:something => 'Emma',:age => 30})) }.should raise_error(ArgumentError)
     end
     
+    it 'throws an exception as the relational value is of the wrong heading' do
+      
+      person = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:name => 'Emma',:age => 30}))
+      person_with_length = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29,:length => 155})).add(Tuple.new({:name => 'Emma',:age => 30, :length => 135}))
+      
+      company = Relation.new(Tuple.new({:name => 'Test AB',:employes => person}))
+      
+      lambda { company = company.add(Tuple.new({:name => 'Nordea AB',:employes => person})) }.should_not raise_error(ArgumentError)
+      lambda { company = company.add(Tuple.new({:name => 'SEB AB',:employes => person_with_length})) }.should raise_error(ArgumentError)
+      
+      
+    end
+    
   end
   
   describe :subset_of? do
@@ -165,6 +178,19 @@ describe Relation do
     end
   end
   
+  
+  describe :new do
+    
+    it 'should accept a relation as a type' do
+      
+      persons = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:name => 'Emma',:age => 30}))
+      
+      Relation.new(Tuple.new({:name => 'Test AB',:employes => persons})).each do |tuple|
+        tuple.employes.should eql(Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:name => 'Emma',:age => 30})))
+      end
+    end
+    
+  end
   
   describe :each do
     it 'iterates over all the tuples and executes the given block' do
