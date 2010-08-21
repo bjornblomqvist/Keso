@@ -37,6 +37,11 @@ describe Heading do
       Heading.new.add(:name => 'a', :type => Fixnum).first.type.should eql(Fixnum)
     end 
     
+    it 'should add return a heading with all the attributes of the supplied heading' do
+      Heading.new.add( Attribute.new(:name => 'a', :type => Fixnum)).add(Heading.new(:name => 'b', :type => Fixnum)).should eql(Heading.new(:name => 'a', :type => 1).add(Attribute.new(:name => 'b', :type => Fixnum)))
+    end
+    
+    
     it 'only accepts attributes or name value pares' do
       lambda{ Heading.new.add(:test,:test) }.should raise_error
     end
@@ -53,6 +58,18 @@ describe Heading do
     end
   end
   
+  describe :rename do
+    it 'changes the name of a current attribute' do
+      Heading.new.add(:name => 'name', :type => String).rename(:name ,:title).should eql(Heading.new.add(:name => :title,:type => String))
+    end
+    
+    it 'should throw an exception' do
+      lambda { Heading.new.add(:name => :name,:type => String).add(:name => :age,:type => Fixnum).rename(:age ,:name) }.should raise_error(ArgumentError)
+      lambda { Heading.new.add(:name => :age,:type => Fixnum).rename(:year ,:some_other_year) }.should raise_error(ArgumentError)
+    end
+  end
+  
+  
   describe :remove do
     it 'removes given attribute' do
       Heading.new(Attribute.new(:name => 'a', :type => 1)).remove(Attribute.new(:name => 'a', :type => 1)).count.should eql(0)
@@ -68,6 +85,21 @@ describe Heading do
     end
   end
   
+  
+  describe :each do
+    it 'iterates over all the attributes in the heading' do
+    
+      
+      count = 0
+      Heading.new.add(Attribute.new(:name => 'a', :type => Fixnum)).add(Heading.new(:name => 'b', :type => Fixnum)).each do |attribute|
+        count += 1
+      end
+  
+      count.should eql(2)
+
+      
+    end
+  end
   
   
 end

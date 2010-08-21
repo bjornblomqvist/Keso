@@ -31,8 +31,45 @@ class Tuple
     @hash[self.heading[attribute_name]]
   end
   
+  
+  def each &block
+    @hash.each do |key,value|
+      block.call key,value
+    end
+  end
+  
   def add *values
-    Tuple.new(@hash.add(*values))
+    
+    if values.length == 1 and values[0].is_a? Tuple
+      to_return = self
+      values[0].each do |attribute,value|
+        to_return = to_return.add(attribute,value)
+      end
+      
+      to_return
+    else
+      if values[0].is_a? Attribute
+        throw "already exists with this name" unless self.heading[values[0].name].nil?
+      elsif values[0].is_a? String
+        throw "already exists with this name" unless self.heading[values[0]].nil?
+      end
+      Tuple.new(@hash.add(*values))
+    end
+  end
+  
+  def hash
+    @hash.hash
+  end
+  
+  def rename from,to
+    throw "Missing from" if self[from].nil?
+    throw "to already exists" unless self[to].nil?
+    
+    to_return = Tuple.new()
+    to_return._heading = @heading.rename(from,to)
+    to_return._inner_hash = @hash.delete(self.heading[from]).add(Attribute.new(to,self.heading[from].type) ,self[from])
+    
+    to_return
   end
   
   def remove *values
@@ -71,10 +108,22 @@ class Tuple
     end
   end
   
+  def method_missing name,&args
+    self[name.to_sym]
+  end
+  
   protected
   
   def inner_hash
     @hash
+  end
+   
+  def _heading= value
+    @heading = value
+  end
+  
+  def _inner_hash= value
+    @hash = value
   end
   
 end

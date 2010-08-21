@@ -10,6 +10,10 @@ class Heading
       @attributes = values
     elsif values.is_a? Hash
       @attributes = @attributes.add(Attribute.new(values))
+    elsif values.is_a? Heading
+      values.get_attributes.each do |attribute|
+        @attributes = @attributes.add(attribute)
+      end
     elsif values.nil?
       # Nil is the same as a no params
     else
@@ -22,6 +26,14 @@ class Heading
       Heading.new(@attributes.add(values))
     elsif values.is_a? Hash
       Heading.new(@attributes.add(Attribute.new(values)))
+    elsif values.is_a? Heading
+      toReturn = Heading.new(self)
+      values.get_attributes.each do |attribute|
+        toReturn = toReturn.add(attribute)
+      end
+      toReturn
+    else
+      throw "Unknown argument"
     end
   end
   
@@ -39,6 +51,12 @@ class Heading
     self == other
   end
   
+  def each &block
+    @attributes.each do |value|
+      block.call value
+    end
+  end
+  
   def [] attribute_name
     @attributes.to_a.each do |value|
       if value.name == attribute_name.to_s
@@ -47,6 +65,13 @@ class Heading
     end
     
     nil
+  end
+  
+  def rename from,to
+    throw "Missing from" if self[from].nil?
+    throw "to already exists" unless self[to].nil?
+    
+    Heading.new(@attributes).remove(from).add(:name => to, :type => self[from].type)
   end
   
   def remove attribute_or_name

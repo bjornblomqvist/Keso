@@ -48,6 +48,14 @@ describe Tuple do
       Tuple.new({:b => 4,:c => 4, :d => 4}).add({:g => 32}).should eql(Tuple.new(:b => 4,:c => 4, :d => 4,:g => 32))
       Tuple.new({:b => 4,:c => 4, :d => 4}).add(:g => 32,:gd => 32).should eql(Tuple.new(:b => 4,:c => 4, :d => 4,:g => 32,:gd => 32))
     end
+    
+    it 'returns a new tuple with the attributes of both' do
+      Tuple.new({:b => 4,:c => 4, :d => 4}).add(Tuple.new({:test => "Hi this is my test"})).should eql(Tuple.new({:b => 4,:c => 4, :d => 4,:test => "Hi this is my test"}))
+    end
+    
+    it 'should throw an exception' do
+      lambda {Tuple.new({:b => 4,:c => 4, :d => 4}).add(Tuple.new({:d => "Hi this is my test"}))}.should raise_error(ArgumentError)
+    end
   end
   
   describe :remove do
@@ -63,11 +71,44 @@ describe Tuple do
     end
   end
   
+  describe :hash do
+    it 'returns the same hash for the same value' do
+      
+      Tuple.new(:g => 'ee',:htn => 21).hash.should eql(Tuple.new(:g => 'ee',:htn => 21).hash)
+      Tuple.new(:g => 'ee',:htn => 21).hash.should_not eql(Tuple.new(:g => 'ee',:htn => 22).hash)
+      
+    end
+  end
+  
+  describe :each do
+    it 'iterates over all the attributes in the tuple' do
+      
+      new_tuple = Tuple.new
+      
+      Tuple.new(:g => 'ee',:htn => 21).each do |attribute,value|
+        new_tuple = new_tuple.add attribute,value
+      end
+      
+      new_tuple.should eql(Tuple.new(:g => 'ee',:htn => 21))
+    end
+  end
+  
+  describe :rename do
+    it 'changes the name of a attribute' do
+      Tuple.new(:g => 'ee',:htn => 21).rename(:g,:d).should eql(Tuple.new(:d => 'ee',:htn => 21))
+    end
+    
+    it 'should throw an exception' do
+      lambda { Tuple.new(:g => 'ee',:htn => 21).rename(:missing,:d) }.should raise_error(ArgumentError)
+      lambda { Tuple.new(:g => 'ee',:htn => 21).rename(:g,:htn) }.should raise_error(ArgumentError)
+    end
+  end
+  
   describe :eql? do
     it 'returns true if the supplied value is equal to this one' do
       Tuple.new().eql?(Tuple.new()).should be_true
       
-      Tuple.new(:g => 'ee',:htn => 21).eql?(Tuple.new(:g => 'ee',:htn => 21)).should be_true
+      Tuple.new(:g => 'ee',:htn => 21).eql?(Tuple.new(:g => 'ee').add(:htn => 21)).should be_true
       
       Tuple.new({:g => 'ee',:htn => 21}).eql?(Tuple.new({:g => 'ee',:htn => 21})).should be_true
       

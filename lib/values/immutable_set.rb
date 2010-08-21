@@ -113,13 +113,19 @@ class ImmutableSet
     self.set.superset?(other_set.set)
   end
   
+  alias :superset_of? :superset?
+  
   def proper_subset? other_set
     self.set.proper_subset?(other_set.set)
   end
   
+  alias :proper_subset_of? :proper_subset?
+  
   def proper_superset? other_set
     self.set.proper_superset?(other_set.set)
   end
+  
+  alias :proper_superset_of? :proper_superset?
   
   def union *values
     self.add *values

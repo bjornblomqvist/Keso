@@ -113,8 +113,19 @@ describe ImmutableSet do
     end
   end
   
+  describe :proper_subset_of? do
+     it 'should return true when all values in the supplied set is also in the current set but they are not equal' do
+
+        ImmutableSet.new([:a,:b]).proper_subset_of?(ImmutableSet.new([:a,:b,:c])).should be_true
+        ImmutableSet.new([:b,:c]).proper_subset_of?(ImmutableSet.new([:a,:b,:c])).should be_true
+        ImmutableSet.new([:a,:b,:c]).proper_subset_of?(ImmutableSet.new([:a,:b,:c])).should be_false
+        ImmutableSet.new([:a,:b,:c]).proper_subset_of?(ImmutableSet.new([:b,:c,:gi])).should be_false
+
+      end
+  end
+  
   describe :superset? do
-    it 'should return true when all values in the supplied set is also in the current set' do
+    it 'should return true when all values in the supplied set is also in the current set but they are not equal' do
       
       ImmutableSet.new([:a,:b,:c]).superset?(ImmutableSet.new([:a,:b])).should be_true
       ImmutableSet.new([:a,:b,:c]).superset?(ImmutableSet.new([:b,:c])).should be_true
