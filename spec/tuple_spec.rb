@@ -47,6 +47,14 @@ describe Tuple do
       Tuple.new({:a => "b",:c => "ue"}).should be_an_instance_of Tuple 
       Tuple.new({:c => 3}).should be_an_instance_of Tuple
     end
+    
+    it 'should accept a attribute as a key' do
+      Tuple.new({Attribute.new(:name => 'name', :type => String) => "Bjorn"}).should eql(Tuple.new({:name => "Bjorn"}))
+    end
+    
+    it 'should throw an exception when i try to add a value that is not of the type represented by the attribute' do
+      lambda {Tuple.new({Attribute.new(:name => 'name', :type => String) => 13})}.should raise_error(ArgumentError)
+    end
   end
   
   describe :add do
@@ -68,6 +76,15 @@ describe Tuple do
       
       Tuple.new({:b => 4,:c => 4, :d => 4}).add({:persons => relation_value}).should eql(Tuple.new(:b => 4,:c => 4, :d => 4,:persons => relation_value))
     end
+    
+    it 'should accept a attribute as a key' do
+      Tuple.new.add({Attribute.new(:name => 'name', :type => String) => "Bjorn"}).should eql(Tuple.new({:name => "Bjorn"}))
+    end
+    
+    it 'should throw an exception when i try to add a value that is not of the type represented by the attribute' do
+      lambda {Tuple.new.add({Attribute.new(:name => 'name', :type => String) => 13})}.should raise_error(ArgumentError)
+    end
+    
   end
   
   describe :remove do

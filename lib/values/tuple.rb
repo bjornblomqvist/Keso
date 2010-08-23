@@ -10,6 +10,13 @@ class Tuple
     @heading = Heading.new
     hash.each do |name_or_attribute,value| 
       if name_or_attribute.is_a? Attribute
+        
+        if value.is_a? Relation
+          throw "#{value} is not the same as #{name_or_attribute.type}" if value.heading != name_or_attribute.type
+        else
+          throw "#{value} is not the same as #{name_or_attribute.type}" if value.class != name_or_attribute.type
+        end
+        
         @heading = @heading.add(name_or_attribute)
         @hash = @hash.add(name_or_attribute,value)
       else
