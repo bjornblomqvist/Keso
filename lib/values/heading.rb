@@ -37,6 +37,10 @@ class Heading
     end
   end
   
+  def hash
+    @attributes.hash
+  end
+  
   def == object
     if object.equal?(self)
       true

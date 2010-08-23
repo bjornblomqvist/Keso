@@ -27,6 +27,12 @@ describe Tuple do
       Tuple.new({:c => 3})[:c].should eql 3
       Tuple.new({:name => 'Bjorn'})[:name].should eql 'Bjorn'
     end
+    
+    it 'returns the value of the named attribute' do
+      Tuple.new({:c => 3})[:c].should eql 3
+      Tuple.new({:name => 'Bjorn'})[Attribute.new(:name => 'name', :type => String)].should eql 'Bjorn'
+      Tuple.new({:name => 'Bjorn'})[Attribute.new(:name => 'name', :type => Fixnum)].should_not eql 'Bjorn'
+    end
   end
   
   describe :count do

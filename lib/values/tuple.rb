@@ -33,7 +33,15 @@ class Tuple
   end
   
   def [] attribute_name
-    @hash[self.heading[attribute_name]]
+    if attribute_name.is_a? String
+      @hash[self.heading[attribute_name]]
+    elsif attribute_name.is_a? Attribute
+      @hash[attribute_name]
+    elsif attribute_name.is_a? Symbol
+      @hash[self.heading[attribute_name.to_s]]
+    else
+      throw "What should i do with this ? attribute_name=\"#{attribute_name.inspect}\""
+    end
   end
   
   

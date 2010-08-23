@@ -26,10 +26,16 @@ describe Heading do
   
   describe :eql? do
     it 'returns true if two headings has the same attributes' do
-        Heading.new(:name => 'a', :type => 1).eql?(Heading.new(:name => 'a', :type => 1)).should be_true
-        Heading.new(:name => 'a', :type => 1).eql?(Heading.new(:name => 'b', :type => 1)).should be_false
+      Heading.new(:name => 'a', :type => 1).eql?(Heading.new(:name => 'a', :type => 1)).should be_true
+      Heading.new(:name => 'a', :type => 1).eql?(Heading.new(:name => 'b', :type => 1)).should be_false
     end
+  end
   
+  describe :hash do
+    it 'should return an integer related to this hash' do
+      Heading.new(:name => 'a', :type => 1).hash.should eql Heading.new(:name => 'a', :type => 1).hash
+      Heading.new(:name => 'a', :type => 1).hash.should_not eql Heading.new(:name => 'b', :type => 1).hash
+    end
   end
   
   describe :add do

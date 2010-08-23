@@ -99,7 +99,7 @@ class Relation
       if tuple.heading == @heading
         Relation.new(@heading).set_body(@body.add tuple)
       else
-        throw 'its not of the same heading!'
+        throw 'its not of the same heading!'+", #{tuple.heading.inspect} != #{@heading.inspect}"
       end
     else
       throw "Only tuples are supported"
@@ -304,6 +304,60 @@ class Relation
     to_return = to_return.project_all_but *(old_and_new_name.values)
     
     to_return
+  end
+  
+  def group column_names,new_column_name
+    
+    # create the headings
+    new_heading = Heading.new
+    new_inner_heading = self.heading
+    
+    column_names.each do |column_name|
+      new_heading = new_heading.add self.heading[column_name]
+    end
+    
+    column_names.each do |column_name| 
+      new_inner_heading = new_inner_heading.remove column_name
+    end
+    
+    new_heading = new_heading.add(:name => new_column_name, :type => new_inner_heading)
+    
+    # split the data
+    temp_data = {}
+    
+    self.each do |tuple|
+      new_tuple = Tuple.new
+      new_inner_tuple = Tuple.new
+
+      new_heading.each do |attribute|
+        new_tuple = new_tuple.add(attribute => tuple[attribute]) unless attribute.name.to_s == new_column_name.to_s
+      end
+      
+      new_inner_heading.each do |attribute|
+        new_inner_tuple = new_inner_tuple.add(attribute => tuple[attribute])
+      end
+      
+      temp_data[new_tuple] ||= []
+      temp_data[new_tuple].push new_inner_tuple
+    end
+    
+    
+    # create the new realation
+    new_relation = Relation.new new_heading
+    
+    temp_data.each do |tuple,array_of_tuples| 
+      
+      inner_relation = Relation.new new_inner_heading
+      
+      array_of_tuples.each do |inner_tuple| 
+        inner_relation = inner_relation.add(inner_tuple)
+      end
+      
+      tuple = tuple.add(new_column_name => inner_relation)
+      new_relation = new_relation.add(tuple)
+    end
+    
+    new_relation
   end
   
   def eql? other

@@ -92,6 +92,11 @@ describe Relation do
       a = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:name => 'Emma',:age => 30}))
       b = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29})).add(Tuple.new({:name => 'Emma',:age => 30}))
       a.should eql b
+      
+      
+      r1 = Relation.new(Tuple.new({:name => 'Bjorn', :person_ids => Relation.new(Tuple.new({:person_id => 12})).add(Tuple.new({:person_id => 119}))}))
+      r2 = Relation.new(Tuple.new({:name => 'Bjorn', :person_ids => Relation.new(Tuple.new({:person_id => 12})).add(Tuple.new({:person_id => 119}))}))
+      r1.should eql(r2)
     end
   end
   
@@ -296,6 +301,19 @@ describe Relation do
     end
   end
   
+  
+  #    r1.group
+  #    r1.project('Name','Age').group(['Age'],'Names') # results in a new relation as r{'Age' => integer, 'Names' => r{'Name' => String}}
+  describe :group do
+    it 'should return a new relatino with a relational value for the columns that was not supplied with the supplied name' do
+      
+      r1  = Relation.new(Tuple.new({:name => 'Bjorn', :person_id => 12})).add(Tuple.new({:name => 'Bjorn', :person_id => 119}))
+      
+      r1.group([:name],:person_ids).should eql(Relation.new(Tuple.new({:name => 'Bjorn', :person_ids => Relation.new(Tuple.new({:person_id => 12})).add(Tuple.new({:person_id => 119}))})))
+      
+    end
+  end
+    
 end
 
 
