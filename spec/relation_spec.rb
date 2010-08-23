@@ -307,12 +307,30 @@ describe Relation do
   describe :group do
     it 'should return a new relatino with a relational value for the columns that was not supplied with the supplied name' do
       
-      r1  = Relation.new(Tuple.new({:name => 'Bjorn', :person_id => 12})).add(Tuple.new({:name => 'Bjorn', :person_id => 119}))
+      r1 = Relation.new(Tuple.new({:name => 'Bjorn', :person_id => 12})).add(Tuple.new({:name => 'Bjorn', :person_id => 119}))
+      r2 = Relation.new(Tuple.new({:name => 'Bjorn', :person_ids => Relation.new(Tuple.new({:person_id => 12})).add(Tuple.new({:person_id => 119}))})) 
       
-      r1.group([:name],:person_ids).should eql(Relation.new(Tuple.new({:name => 'Bjorn', :person_ids => Relation.new(Tuple.new({:person_id => 12})).add(Tuple.new({:person_id => 119}))})))
+      r1.group([:name],:person_ids).should eql(r2)
       
     end
   end
+  
+  
+  #    r1.ungroup
+  #    r1.project('Name','Age').group(['Age'],'Names').ungroup('Names'[,{'Name' => 'New_name'}]) # results in a new relation as r{'Age' => integer, 'Name' => String}
+  describe :ungroup do
+    it 'should return a new relation with the person_ids relational value expended into its container relation' do
+      
+      r1 = Relation.new(Tuple.new({:name => 'Bjorn', :person_id => 12})).add(Tuple.new({:name => 'Bjorn', :person_id => 119}))
+      r2 = Relation.new(Tuple.new({:name => 'Bjorn', :person_ids => Relation.new(Tuple.new({:person_id => 12})).add(Tuple.new({:person_id => 119}))}))
+      
+      r2.ungroup(:person_ids).should eql(r1)
+      
+      
+    end
+  end
+
+  
     
 end
 

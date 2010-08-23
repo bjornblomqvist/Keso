@@ -35,7 +35,6 @@
 #    r1.join(r2) do |tupel| ... end 
 #    r1.cartesian_product(r2) # new relation with r1 * r2 tuples with all attributes of r1 and r2, set result
 #    r1.natrual_join(r2) # cartesian_product with a selection based on equal attributes having to have equal value, set result  
-
 #    r1.group
 #    r1.ungroup
 
@@ -45,11 +44,7 @@
 #       new_tuple.add('min_age',min(tuples,'age'))
 #       new_tuple.add('median_age',median(tuples,'age'))
 #    end
-#    r1.group
 
-# i am missing summary functions
-#
-#
 # Tutorial D
 #
 #    r1.project('Name','Age').group(['Age'],'Names') # results in a new relation as r{'Age' => integer, 'Names' => r{'Name' => String}}
@@ -302,6 +297,35 @@ class Relation
     
 
     to_return = to_return.project_all_but *(old_and_new_name.values)
+    
+    to_return
+  end
+  
+  
+  def ungroup column_name
+    
+    new_tuples = []
+    self.each do |tuple|
+      inner_relation = tuple[column_name]
+      tuple = tuple.remove column_name
+      inner_relation.each do |inner_tuple|
+        temp = tuple
+        inner_tuple.each do |attribute,value|
+          temp = temp.add({attribute => value})
+          new_tuples.push(temp)
+        end
+      end
+    end
+    
+    new_heading = self.heading.remove column_name
+    self.heading[column_name].type.each do |attribute|
+      new_heading = new_heading.add attribute
+    end
+    
+    to_return = Relation.new new_heading
+    new_tuples.each do |tuple|
+      to_return = to_return.add tuple
+    end
     
     to_return
   end
