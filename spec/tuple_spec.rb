@@ -85,6 +85,10 @@ describe Tuple do
       lambda {Tuple.new.add({Attribute.new(:name => 'name', :type => String) => 13})}.should raise_error(ArgumentError)
     end
     
+    it 'should not accept a null value' do
+      lambda {Tuple.new.add({Attribute.new(:name => 'name', :type => String) => nil})}.should raise_error(ArgumentError)
+      lambda {Tuple.new.add({Attribute.new(:name => 'name', :type => nil) => nil})}.should raise_error(ArgumentError)
+    end
   end
   
   describe :remove do

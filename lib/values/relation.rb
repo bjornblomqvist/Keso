@@ -37,7 +37,6 @@
 #    r1.natrual_join(r2) # cartesian_product with a selection based on equal attributes having to have equal value, set result  
 #    r1.group
 #    r1.ungroup
-
 #    r1.summarize(:name) do |tuples,new_tuple|
 #       new_tuple.add('avrange_age',avg(tuples,'age'))
 #       new_tuple.add('max_age',max(tuples,'age'))
@@ -45,11 +44,16 @@
 #       new_tuple.add('median_age',median(tuples,'age'))
 #    end
 
+#
+#   Add a to_keso to active record and also create a gem
+#
+
 # Tutorial D
 #
 #    r1.project('Name','Age').group(['Age'],'Names') # results in a new relation as r{'Age' => integer, 'Names' => r{'Name' => String}}
 #    r1.project('Name','Age').group(['Age'],'Names').ungroup('Names'[,{'Name' => 'New_name'}]) # results in a new relation as r{'Age' => integer, 'Name' => String}
 #
+
 # A relation is a set of tupels constrainted to what can be described as a relational type by a heading, this means that 
 # the relation only takes tuples with the same heading as the relation.
 #  It has a body
@@ -297,6 +301,26 @@ class Relation
     
 
     to_return = to_return.project_all_but *(old_and_new_name.values)
+    
+    to_return
+  end
+  
+  
+  def summarize column_names, &block
+    
+    column_names = [column_names] unless column_names.is_a? Array
+    
+    new_tuples = []
+    
+    self.group(column_names,"temp_12345").each do |tuple|
+      new_tuples.push(block.call(tuple.remove("temp_12345"),tuple['temp_12345']))
+    end
+    
+    to_return = Relation.new new_tuples.first.heading
+    
+    new_tuples.each do |tuple|
+      to_return = to_return.add tuple
+    end
     
     to_return
   end

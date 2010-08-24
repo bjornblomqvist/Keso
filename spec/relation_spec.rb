@@ -329,6 +329,27 @@ describe Relation do
       
     end
   end
+  
+  #    r1.summarize(:name) do |tuples,new_tuple|
+  #       new_tuple.add('avrange_age',avg(tuples,'age'))
+  #       new_tuple.add('max_age',max(tuples,'age'))
+  #       new_tuple.add('min_age',min(tuples,'age'))
+  #       new_tuple.add('median_age',median(tuples,'age'))
+  #    end
+  describe :summarize do 
+    it 'returns a new relation with new columns' do
+      
+      r1 = Relation.new(Tuple.new({:name => 'Bjorn', :person_id => 12})).add(Tuple.new({:name => 'Bjorn', :person_id => 119})).add(Tuple.new({:name => 'Marianna', :person_id => 9}))
+      r2 = Relation.new(Tuple.new({:name => 'Bjorn', :count => 2})).add(Tuple.new({:name => 'Marianna', :count => 1}))
+      
+      r3 = r1.summarize(:name) do |tuple,relation|
+        tuple.add(:count => relation.count)
+      end
+      
+      r3.should eql(r2)
+      
+    end
+  end
 
   
     
