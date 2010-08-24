@@ -5,13 +5,12 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "keso"
-    gem.summary = %Q{A DBMS the way i want it}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Cottage cheees with lots of relational theory}
+    gem.description = %Q{Cottage cheees with lots of relational theory. Or mabye not so much theory =(}
     gem.email = "darwin@markkonsulter.se"
     gem.homepage = "http://github.com/bjornblomqvist/keso"
-    gem.authors = ["Darwin B Blomqvist"]
+    gem.authors = ["Darwin"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
