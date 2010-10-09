@@ -38,6 +38,12 @@ describe Heading do
     end
   end
   
+  describe :names do
+    it 'should return the names of the attributes in the heading' do
+      Heading.new(Attribute.new(:name => 'a', :type => Fixnum)).add(Attribute.new(:name => 'b', :type => Fixnum)).names.should eql(['a','b'])
+    end
+  end
+  
   describe :add do
     it 'accepts attributes or name value pares' do
       Heading.new.add( Attribute.new(:name => 'a', :type => Fixnum)).first.type.should eql(Fixnum)

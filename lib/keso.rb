@@ -1,5 +1,4 @@
 
-
 require File.dirname(__FILE__)+'/values/immutable_hash'
 require File.dirname(__FILE__)+'/values/immutable_set'
 require File.dirname(__FILE__)+'/values/attribute'

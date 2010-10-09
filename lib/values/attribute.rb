@@ -15,7 +15,7 @@ class Attribute
       type = type.class
     end
     
-    throw "Type cant be nil" if type == NilClass
+    throw "Type cant be nil, :#{name} => #{type}" if type == NilClass
       
     
     @name = name.to_s

@@ -233,6 +233,14 @@ class Relation
     @body.size
   end
   
+  def size
+    self.count
+  end
+  
+  def length
+    self.count
+  end
+  
   def each &block
     @body.each do |value|
       block.call value
@@ -361,6 +369,7 @@ class Relation
     new_inner_heading = self.heading
     
     column_names.each do |column_name|
+      throw "there is no #{column_name} in [#{self.heading.names.join(',')}]" if self.heading[column_name].nil?
       new_heading = new_heading.add self.heading[column_name]
     end
     

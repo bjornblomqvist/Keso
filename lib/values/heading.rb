@@ -21,6 +21,15 @@ class Heading
     end
   end
   
+  def names
+    toReturn = []
+    @attributes.each do |attribute|
+      toReturn << attribute.name
+    end
+    
+    toReturn
+  end
+  
   def add values
     if values.is_a? Attribute
       Heading.new(@attributes.add(values))
@@ -33,7 +42,7 @@ class Heading
       end
       toReturn
     else
-      throw "Unknown argument"
+      throw "Unknown argument #{values.class}"
     end
   end
   
