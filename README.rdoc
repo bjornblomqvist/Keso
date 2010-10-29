@@ -1,6 +1,12 @@
 = keso
 
-Description goes here.
+A relation implementation based in inspiration from "The Third Manifesto".
+
+The goal of this to make it easier to organize data.
+
+This is a evolutionary project that will change shape with changing understudying of the problem.
+
+If you find Keso interesting checkout this other http://github.com/dkubb/veritas.
 
 == Note on Patches/Pull Requests
  
