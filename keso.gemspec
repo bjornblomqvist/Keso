@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Darwin"]
-  s.date = %q{2010-10-09}
+  s.date = %q{2010-10-29}
   s.description = %q{Cottage cheees with lots of relational theory. Or mabye not so much theory =(}
   s.email = %q{darwin@markkonsulter.se}
   s.extra_rdoc_files = [
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "keso.gemspec",
      "lib/keso.rb",
      "lib/realvar.rb",
      "lib/values/attribute.rb",
