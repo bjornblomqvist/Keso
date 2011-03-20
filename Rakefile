@@ -1,3 +1,6 @@
+require 'bundler'
+Bundler.setup(:default,:rake)
+
 require 'rubygems'
 require 'rake'
 

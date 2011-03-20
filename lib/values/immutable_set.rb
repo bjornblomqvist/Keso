@@ -5,55 +5,44 @@ class ImmutableSet
   
   def initialize(*args) 
     
-    @set = Set.new;
-    
-    args.each do |value|
-      if value.is_a? ImmutableSet
-        @set.merge value.set
-      elsif value.is_a? Set
-        @set.merge value
-      elsif value.is_a? Array
-        @set.merge value
-      elsif not value.nil?
-        @set.add value
+    if args.first.is_a? ImmutableSet::SetChange
+      @set_change = args.first
+    else
+      @set = Set.new;
+
+      args.each do |value|
+        if value.is_a? ImmutableSet
+          @set.merge value.set
+        elsif value.is_a? Set
+          @set.merge value
+        elsif value.is_a? Array
+          @set.merge value
+        elsif not value.nil?
+          @set.add value
+        end
       end
     end
     
   end
   
   def size
-    @set.size
+    self.set.size
   end
   
   alias :count :size
   
   def each &block
-    @set.to_a.each do |value|
+    self.set.to_a.each do |value|
       block.call value
     end
   end
   
   def add *values
-    
-    new_set = @set.clone
-    
-    values.each do |value|
-      if value.is_a? ImmutableSet
-        new_set.merge(value.to_a)
-      elsif value.is_a? Set
-        new_set.merge(value)
-      elsif value.is_a? Array
-        new_set.merge(value)
-      else
-        new_set.add(value)
-      end
-    end
-    
-    ImmutableSet.new(new_set)
+    ImmutableSet.new(SetChange.new(values,@set || @set_change.set,true,@set_change))
   end
   
   def hash
-    @set.hash
+    self.set.hash
   end
   
   def eql? other
@@ -71,32 +60,17 @@ class ImmutableSet
   end
   
   def delete *values
-    
-    new_set = @set.clone
-    
-    values.each do |value|
-      if value.is_a? ImmutableSet
-        new_set.subtract(value.to_a)
-      elsif value.is_a? Set
-        new_set.subtract(value)
-      elsif value.is_a? Array
-        new_set.subtract(value)
-      else
-        new_set.delete(value)
-      end
-    end
-    
-    ImmutableSet.new(new_set)
+    ImmutableSet.new(SetChange.new(values,@set || @set_change.set,false,@set_change))
   end
   
   alias :remove :delete
   
   def to_a
-    @set.to_a
+    self.set.to_a
   end
   
   def include? value
-    @set.include? value
+    self.set.include? value
   end
   
   
@@ -144,7 +118,63 @@ class ImmutableSet
   protected
   
   def set
-    @set
+    @set ||= @set_change.unrole
+  end
+  
+  class SetChange
+    
+    def initialize values,set,add,set_change
+      
+      raise "set must be supplied" unless set
+      raise "values must be supplied" unless values
+      
+      @values = values
+      @set = set
+      @add = add
+      @set_change = set_change
+    end
+    
+    def set
+      @set
+    end
+    
+    def add_change_to_set set
+      
+      @set_change.add_change_to_set(set) if @set_change
+      
+      if @add
+        @values.each do |value|
+          if value.is_a? ImmutableSet
+            set.merge(value.to_a)
+          elsif value.is_a? Set
+            set.merge(value)
+          elsif value.is_a? Array
+            set.merge(value)
+          else
+            set.add(value)
+          end
+        end
+      else
+        @values.each do |value|
+          if value.is_a? ImmutableSet
+            set.subtract(value.to_a)
+          elsif value.is_a? Set
+            set.subtract(value)
+          elsif value.is_a? Array
+            set.subtract(value)
+          else
+            set.delete(value)
+          end
+        end
+      end
+      
+      set
+    end
+    
+    def unrole
+      self.add_change_to_set(@set.clone)
+    end
+    
   end
   
 end

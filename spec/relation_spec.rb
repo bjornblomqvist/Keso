@@ -31,8 +31,12 @@ describe Relation do
       
       lambda { company = company.add(Tuple.new({:name => 'Nordea AB',:employes => person})) }.should_not raise_error(ArgumentError)
       lambda { company = company.add(Tuple.new({:name => 'SEB AB',:employes => person_with_length})) }.should raise_error(ArgumentError)
-      
-      
+    end
+    
+    it 'returns a new relation with the added tuples' do 
+       r = Relation.new(Tuple.new({:name => 'Bjorn',:age => 29}))
+       r = r.add([Tuple.new({:name => 'Emma',:age => 30}),Tuple.new({:name => 'Emma',:age => 31})])
+       r.count.should eql 3
     end
     
   end

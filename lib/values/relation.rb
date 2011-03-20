@@ -100,6 +100,14 @@ class Relation
       else
         throw 'its not of the same heading!'+", #{tuple.heading.inspect} != #{@heading.inspect}"
       end
+    elsif tuple.is_a?(Array) && tuple.first.is_a?(Tuple)
+      # Check that all tuples are valid
+      tuple.each do |t| 
+        if t.heading != @heading
+          throw 'its not of the same heading!'+", #{t.heading.inspect} != #{@heading.inspect}"
+        end
+      end
+      Relation.new(@heading).set_body(@body.add tuple)
     else
       throw "Only tuples are supported"
     end
