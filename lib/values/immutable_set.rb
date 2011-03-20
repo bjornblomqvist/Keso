@@ -132,10 +132,25 @@ class ImmutableSet
       @set = set
       @add = add
       @set_change = set_change
+      @depth = 0
+      
+      if set_change
+        # We need to unrole when we have a depth of more than 500 so that we dont couse a SystemStackError
+        if set_change.depth > 4000
+          @set_change = nil
+          @set = set_change.unrole
+        else
+          @depth = set_change.depth + 1
+        end
+      end
     end
     
     def set
       @set
+    end
+    
+    def depth
+      @depth
     end
     
     def add_change_to_set set
