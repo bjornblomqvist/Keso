@@ -20,6 +20,16 @@ timeit "Tuple" do
       r << Tuple.new({:name => 'Emma',:age => i})
      end
    end
+   
+   timeit "Add 2000 values to a tuple" do
+      r = []
+      t = Tuple.new
+
+      2000.times do |i|
+        r << t
+        t = t.add({"name_#{i}".to_sym => i})
+      end
+   end
   
 end
 
