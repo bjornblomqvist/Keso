@@ -5,13 +5,19 @@ class ImmutableHash
     
     @hash = {}
     
-    if key_or_hash.is_a?(ImmutableHash) || key_or_hash.is_a?(Hash)
-      key_or_hash.keys.each do |key|
-        @hash[key] = key_or_hash[key]
+    if key_or_hash.is_a?(ImmutableHash)
+      @hash = key_or_hash.inner_hash
+    elsif key_or_hash.is_a?(Hash)
+      if(key_or_hash.frozen?) 
+        @hash = key_or_hash
+      else
+        @hash = key_or_hash.dup
       end
     elsif !key_or_hash.nil?
       @hash[key_or_hash] = value
     end
+    
+    @hash.freeze
   end
   
   def [] key
@@ -50,7 +56,7 @@ class ImmutableHash
   
   def delete *to_remove
     
-    newHash = @hash.clone
+    newHash = @hash.dup
     
     to_remove.each do |to_remove|
       if to_remove.is_a?(ImmutableHash) || to_remove.is_a?(Hash)
@@ -66,20 +72,20 @@ class ImmutableHash
       end
     end
     
-    ImmutableHash.new newHash
+    ImmutableHash.new newHash.freeze
   end
   
   def add key_or_hash,value = nil
     if key_or_hash.is_a?(ImmutableHash) || key_or_hash.is_a?(Hash)
-      newHash = @hash.clone
+      newHash = @hash.dup
       key_or_hash.keys.each do |key|
         newHash[key] = key_or_hash[key]
       end
-      ImmutableHash.new(newHash)
+      ImmutableHash.new(newHash.freeze)
     else
-      newHash = @hash.clone
+      newHash = @hash.dup
       newHash[key_or_hash] = value
-      ImmutableHash.new newHash
+      ImmutableHash.new newHash.freeze
     end
   end
   
