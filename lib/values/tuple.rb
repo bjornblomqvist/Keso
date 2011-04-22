@@ -5,9 +5,22 @@ class Tuple
   @hash = nil
   
   def initialize *args
-    hash = ImmutableHash.new *args
-    @hash = ImmutableHash.new
-    @heading = Heading.new
+    
+    # Fix so that we have the input as a hash
+    hash = args.first
+    unless(hash.is_a?(Hash) || hash.is_a?(ImmutableHash))  
+      hash = {args[0] => args[1]}
+    end
+    
+    if args.length == 0
+      hash = {}
+    end
+    
+    
+    # Validate and put the input as we want it
+    values = {}
+    heading = []
+    
     hash.each do |name_or_attribute,value| 
       if name_or_attribute.is_a? Attribute
         
@@ -17,18 +30,22 @@ class Tuple
           throw "#{value} is not the same as #{name_or_attribute.type}" if value.class != name_or_attribute.type
         end
         
-        @heading = @heading.add(name_or_attribute)
-        @hash = @hash.add(name_or_attribute,value)
+        heading << name_or_attribute
       else
         if value.is_a? Relation
-          @heading = @heading.add(Attribute.new(name_or_attribute,value.heading))
-          @hash = @hash.add(Attribute.new(name_or_attribute,value.heading),value)
+          heading << Attribute.new(name_or_attribute,value.heading)
         else
-          @heading = @heading.add(Attribute.new(name_or_attribute,value.class))
-          @hash = @hash.add(Attribute.new(name_or_attribute,value.class),value)
+          heading << Attribute.new(name_or_attribute,value.class)
         end
       end
+      
+      values[heading.last] = value
     end
+    
+    # set it
+    @hash = ImmutableHash.new values
+    @heading = Heading.new heading
+    
   end
   
   def count
