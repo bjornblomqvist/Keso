@@ -23,7 +23,7 @@ class Heading
     end
     
     # Validate
-    @attribute.each do |a|
+    @attributes.each do |a|
       raise "Invalid input, all values must be an attribute or hash that creats an attribute" unless a.is_a? Attribute
     end
   end
