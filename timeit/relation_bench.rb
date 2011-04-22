@@ -33,6 +33,36 @@ timeit "Tuple" do
   
 end
 
+timeit "ImmutableHash" do
+  
+  timeit "Add 1000 values" do 
+    
+    ihash = ImmutableHash.new
+    
+    1000.times do |i|
+      ihash = ihash.add({"bal#{i}" => i})
+    end
+  end
+  
+  timeit "Add 2000 values" do 
+    
+    ihash = ImmutableHash.new
+    
+    2000.times do |i|
+      ihash = ihash.add({"bal#{i}" => i})
+    end
+  end
+  
+  timeit "Add 10000 values" do 
+    
+    ihash = ImmutableHash.new
+    
+    10000.times do |i|
+      ihash = ihash.add({"bal#{i}" => i})
+    end
+  end
+  
+end
 
 timeit "ImmutableSet" do
   
