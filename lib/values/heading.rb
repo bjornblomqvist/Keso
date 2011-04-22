@@ -8,6 +8,8 @@ class Heading
       @attributes = @attributes.add values
     elsif values.is_a? ImmutableSet
       @attributes = values
+    elsif values.is_a? Array
+      @attributes = ImmutableSet.new values
     elsif values.is_a? Hash
       @attributes = @attributes.add(Attribute.new(values))
     elsif values.is_a? Heading
@@ -18,6 +20,11 @@ class Heading
       # Nil is the same as a no params
     else
       raise 'Invalid parameter, expected a hash with name and type or a attribute'
+    end
+    
+    # Validate
+    @attribute.each do |a|
+      raise "Invalid input, all values must be an attribute or hash that creats an attribute" unless a.is_a? Attribute
     end
   end
   
